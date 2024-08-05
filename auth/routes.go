@@ -1,9 +1,11 @@
 package auth
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/test/gingonic/database"
+)
 
-func AuthRoutes(incomingRoutes *gin.Engine) {
-
-	incomingRoutes.POST("/auth/register", registerController)
+func (repo *database.Repository) AuthRoutes(incomingRoutes *gin.Engine) {
+	incomingRoutes.POST("/auth/register", repo.registerController)
 
 }

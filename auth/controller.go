@@ -1,7 +1,10 @@
 package auth
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/test/gingonic/database"
+)
 
-func registerController(ctx *gin.Context) {
+func (repo *database.Repository) registerController(ctx *gin.Context) {
 	// registerService()
 }

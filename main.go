@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/test/gingonic/database"
 	"github.com/test/gingonic/user"
 )
 
@@ -25,9 +26,13 @@ func main() {
 	app := gin.Default()
 	app.Use(gin.Logger())
 
-	db := connectToDatabase()
+	db := database.ConnectToDatabase()
 
 	user.MigrateUser(db)
+
+	repo := database.Repository{
+		DB: db,
+	}
 
 	app.GET("/api-1", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{"success": "Access granted for api-1"})

@@ -1,4 +1,4 @@
-package main
+package database
 
 import (
 	"fmt"
@@ -18,7 +18,11 @@ var config = map[string]string{
 	"DBName":   os.Getenv("DB_NAME"),
 }
 
-func connectToDatabase() *gorm.DB {
+type Repository struct {
+	DB *gorm.DB
+}
+
+func ConnectToDatabase() *gorm.DB {
 
 	dsn := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
