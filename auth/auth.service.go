@@ -7,14 +7,14 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func RegisterUserService(username, password string) (models.User, error) {
-	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	user := models.User{Username: username, Password: string(hashedPassword)}
+func registerUserService(input RegisterInput) (models.User, error) {
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
+	user := models.User{Username: input.Username, Password: string(hashedPassword), Email: input.Email}
 	result := database.DB.Create(&user)
 	return user, result.Error
 }
 
-func AuthenticateUserService(username, password string) (models.User, error) {
+func authenticateUserService(username, password string) (models.User, error) {
 	var user models.User
 	result := database.DB.Where("username = ?", username).First(&user)
 	if result.Error != nil {

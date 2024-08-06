@@ -7,8 +7,8 @@ import (
 func RegisterRoutes(router *gin.Engine) {
 	authGroup := router.Group("/api/auth")
 	{
-		authGroup.POST("/register", RegisterController)
-		authGroup.POST("/login", LoginController)
+		authGroup.POST("/register", registerController)
+		authGroup.POST("/login", loginController)
 	}
 
 	// Apply authentication middleware to routes

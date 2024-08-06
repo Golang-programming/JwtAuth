@@ -6,16 +6,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterController(c *gin.Context) {
+func registerController(c *gin.Context) {
+	// var registerInput = RegisterInput
 	var input struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
+		ID    int    `form:"id" binding:"required"`
+		Name  string `form:"name" binding:"required"`
+		Email string `form:"email" binding:"required,email"`
 	}
-	if err := c.ShouldBindJSON(&input); err != nil {
+	if err := c.ShouldBindQuery(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	user, err := RegisterUserService(input.Username, input.Password)
+	user, err := registerUserService(input)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -23,7 +25,7 @@ func RegisterController(c *gin.Context) {
 	c.JSON(http.StatusCreated, user)
 }
 
-func LoginController(c *gin.Context) {
+func loginController(c *gin.Context) {
 	var input struct {
 		Username string `json:"username"`
 		Password string `json:"password"`
@@ -32,7 +34,7 @@ func LoginController(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	user, err := AuthenticateUserService(input.Username, input.Password)
+	user, err := authenticateUserService(input.Username, input.Password)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 		return
