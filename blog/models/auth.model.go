@@ -1,0 +1,14 @@
+package models
+
+import (
+	"gorm.io/gorm"
+)
+
+type Blog struct {
+	gorm.Model
+	Title         string `gorm:"type:varchar(255); NOT NULL" json:"title"`
+	Content       string `gorm:"type:text; NOT NULL" json:"content"`
+	ThumbnailUrl  string `gorm:"type:varchar(255); NOT NULL" json:"thumbnail_url"`
+	BackgroundUrl string `gorm:"type:varchar(255); NULL" json:"background_url"`
+	//
+}
