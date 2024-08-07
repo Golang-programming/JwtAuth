@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"blog-app/auth"
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -11,20 +10,15 @@ import (
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		authHeader := ctx.GetHeader("Authorization")
 
-		authHeader := ctx.Request.Header.Get("Authorization")
-		if authHeader == "" {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is missing"})
+		if !strings.HasPrefix(authHeader, "Bearer ") {
+			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid or missing Authorization header"})
 			ctx.Abort()
 			return
 		}
 
-		tokenString := strings.Split(authHeader, "Bearer ")[1]
-		if tokenString == "" {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is missing"})
-			ctx.Abort()
-			return
-		}
+		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 
 		claims, err := auth.ValidateToken(tokenString)
 		if err != nil {
@@ -33,8 +27,8 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// check if user exist in database
-		fmt.Println("claims", claims)
+		// Use claims if needed
+		_ = claims // Remove this line if you use claims later
 
 		ctx.Next()
 	}
