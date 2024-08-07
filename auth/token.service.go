@@ -89,7 +89,7 @@ func RefreshToken(refreshTokenStr string) (string, string, error) {
 
 	storedRefreshToken, err := redisClient.Get(ctx, "refresh_token:"+claims.UserID).Result()
 	if err != nil || storedRefreshToken != refreshTokenStr {
-		return "", "", errors.New("refresh token is invalid or does not match")
+		return "", "", errors.New("invalid refresh token")
 	}
 
 	accessToken, newRefreshToken, err := CreateToken(claims.UserID, claims.Email)
