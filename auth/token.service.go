@@ -2,6 +2,7 @@ package auth
 
 import (
 	"errors"
+	"os"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -10,7 +11,7 @@ import (
 )
 
 var (
-	jwtSecret   = []byte("your_secret_key")
+	jwtSecret   = []byte(os.Getenv("JWT_SECRET"))
 	redisClient *redis.Client
 	ctx         = context.Background()
 )
@@ -23,7 +24,7 @@ type CustomClaims struct {
 
 func InitRedisClient() {
 	redisClient = redis.NewClient(&redis.Options{
-		Addr: "localhost:6379",
+		Addr: os.Getenv("REDIS_URL"),
 	})
 }
 
@@ -51,11 +52,11 @@ func CreateToken(userID, email string) (string, string, error) {
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
 
-	accessTokenStr, err := accessToken.SignedString(jwtSecret)
+	accessTokenStr, err := accessToken.SignedString("jwtSecret")
 	if err != nil {
 		return "", "", err
 	}
-	refreshTokenStr, err := refreshToken.SignedString(jwtSecret)
+	refreshTokenStr, err := refreshToken.SignedString("jwtSecret")
 	if err != nil {
 		return "", "", err
 	}
