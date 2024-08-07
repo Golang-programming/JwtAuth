@@ -41,6 +41,7 @@ func main() {
 	})
 
 	err = database.InitializeDB()
+	auth.InitRedisClient()
 	if err != nil {
 		panic("failed to connect database")
 	}
