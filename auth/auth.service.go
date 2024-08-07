@@ -7,20 +7,20 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func registerUserService(input RegisterInput) (models.User, error) {
+func registerUserService(input *RegisterInput) (models.User, error) {
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 	user := models.User{Username: input.Username, Password: string(hashedPassword), Email: input.Email}
 	result := database.DB.Create(&user)
 	return user, result.Error
 }
 
-func authenticateUserService(username, password string) (models.User, error) {
+func authenticateUserService(input *LoginInput) (models.User, error) {
 	var user models.User
-	result := database.DB.Where("username = ?", username).First(&user)
+	result := database.DB.Where("username = ? OR email = ?", input.Identifier, input.Identifier).First(&user)
 	if result.Error != nil {
 		return user, result.Error
 	}
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password)); err != nil {
 		return user, err
 	}
 	return user, nil
